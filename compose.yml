@@ -1,15 +1,43 @@
 services:
-  kea:
-    build: ./kea
-    container_name: kea
+  router:
+    build: ./router
+    hostname: router
     networks:
-      dhcp_lab:
-        ipv4_address: 192.168.130.2
+     rede_stark:
+       ipv4_address: 192.168.10.0/24
+       interface_name: eth1
+     rede_lannister:
+       ipv4_address: 192.168.11.0/24
+       interface_name: eth2
+     rede_targaryen:
+       ipv4_address: 192.168.12.0/24
+       interface_name: eth3
+    cap_add:
+      - NET_ADMIN
+
+  ned:
+    build: ./kea
+    hostname: ned
+    networks:
+      rede_stark:
+        ipv4_address: 192.168.10.10
     cap_add:
       - NET_ADMIN
     volumes:
       - ./kea/kea-dhcp4.conf.json:/etc/kea/kea-dhcp4.conf
-  
+      - ./kea/entrypoint.sh:/sbin/entrypoint.sh
+
+    arya:
+      build: dnsserver
+      hostname: arya
+      networks:
+        rede_stark:
+          ipv4_address: 192.168.10.11
+      volumes:
+        - ./arya/named.conf.local:/etc/bind/named.conf.local
+        - ./arya/named.conf.options:/etc/bind/named.conf.options
+        - ./arya/zonas:/var/cache/bind/zonas
+    
   cliente1:
     build: ./cliente
     container_name: client1
