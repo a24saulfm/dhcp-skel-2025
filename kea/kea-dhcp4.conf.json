@@ -34,6 +34,7 @@
                 "hw-address": "1a:1b:1c:1d:1e:1f",
                 "ip-address": "192.0.2.202"
             },
+        "option-data"
         "subnet": "192.168.10.0/24"
     },
     {
